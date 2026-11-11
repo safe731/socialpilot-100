@@ -1,0 +1,6 @@
+{
+  "name": "SocialPilot 100+",
+  "description": "Multi-user social media management & scheduled publishing SaaS platform for 100–1000+ Facebook Pages with Meta Graph API.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
