@@ -8,13 +8,11 @@ import {
   Image as ImageIcon,
   Check,
   Search,
-  Sparkles,
   Send,
   Save,
   Globe,
   ThumbsUp,
   MessageSquare,
-  ExternalLink,
   Info,
 } from 'lucide-react';
 import type { FacebookPage } from '../types';
@@ -50,11 +48,10 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
   const [scheduledTime, setScheduledTime] = useState('12:00');
   const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC');
 
-  // Page search & category filter for large fleets (100–1000+ pages)
+  // Search & filter
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
 
-  // Categories list
   const categories = useMemo(() => {
     const set = new Set<string>();
     pages.forEach((p) => {
@@ -63,7 +60,6 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
     return Array.from(set);
   }, [pages]);
 
-  // Filtered pages list
   const filteredPages = useMemo(() => {
     return pages.filter((p) => {
       const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.id.includes(searchQuery);
@@ -72,7 +68,6 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
     });
   }, [pages, searchQuery, categoryFilter]);
 
-  // Select all / deselect all
   const handleSelectAll = () => {
     const allFilteredIds = filteredPages.map((p) => p.id);
     setSelectedPageIds((prev) => Array.from(new Set([...prev, ...allFilteredIds])));
@@ -89,7 +84,6 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
     );
   };
 
-  // Primary preview page (first selected or first available)
   const previewPage = useMemo(() => {
     if (selectedPageIds.length > 0) {
       const found = pages.find((p) => p.id === selectedPageIds[0]);
@@ -127,21 +121,22 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
+    <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 w-full overflow-x-hidden">
+      {/* Title Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-            Create & Distribute Multi-Page Publication
+          <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+            Create & Distribute Multi-Page Post
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Compose your post once, select target Facebook Pages (up to 1,000+), and distribute via official Meta Graph API.
+          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Compose once, select target Facebook Pages (100–1000+), and distribute via official Meta Graph API.
           </p>
         </div>
 
         {/* Selected target counter */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-start sm:self-auto">
           <span className="text-xs text-slate-500 dark:text-slate-400">
-            Selected Targets:
+            Selected:
           </span>
           <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
             {selectedPageIds.length} / {pages.length} Pages
@@ -149,18 +144,18 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Post Editor & Controls (7 Cols) */}
-        <div className="lg:col-span-7 space-y-5">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+        {/* Left Column: Post Editor & Fleet Controls (7 Cols on desktop, 1 col on mobile) */}
+        <div className="lg:col-span-7 space-y-4 sm:space-y-5">
           {/* Main Content Card */}
-          <div className="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-4">
+          <div className="p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-3 sm:space-y-4">
             <div>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-1.5 sm:mb-2">
                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                   Post Copy
                 </label>
                 <span className="text-[11px] font-mono text-slate-400">
-                  {content.length} characters
+                  {content.length} chars
                 </span>
               </div>
               <textarea
@@ -168,23 +163,23 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="What's happening? Write your post message for all connected Facebook Pages..."
                 rows={5}
-                className="w-full p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-y"
+                className="w-full p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-y min-h-[120px]"
                 required
               />
             </div>
 
-            {/* Media Attachment Selector */}
+            {/* Media Attachment Selector (Mobile-friendly stacked or 3-col) */}
             <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
               <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-2">
                 Attachment Type
               </label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => setMediaType('none')}
-                  className={`py-2 px-3 rounded-lg border text-xs font-medium transition-all ${
+                  className={`py-2.5 px-3 rounded-lg border text-xs font-medium min-h-[44px] flex items-center justify-center transition-all ${
                     mediaType === 'none'
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-semibold'
                       : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                   }`}
                 >
@@ -193,25 +188,25 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setMediaType('link')}
-                  className={`py-2 px-3 rounded-lg border text-xs font-medium flex items-center justify-center gap-1.5 transition-all ${
+                  className={`py-2.5 px-3 rounded-lg border text-xs font-medium min-h-[44px] flex items-center justify-center gap-1.5 transition-all ${
                     mediaType === 'link'
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-semibold'
                       : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                   }`}
                 >
-                  <Link2 className="w-3.5 h-3.5" />
+                  <Link2 className="w-4 h-4" />
                   <span>Link Card</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setMediaType('image')}
-                  className={`py-2 px-3 rounded-lg border text-xs font-medium flex items-center justify-center gap-1.5 transition-all ${
+                  className={`py-2.5 px-3 rounded-lg border text-xs font-medium min-h-[44px] flex items-center justify-center gap-1.5 transition-all ${
                     mediaType === 'image'
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-semibold'
                       : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                   }`}
                 >
-                  <ImageIcon className="w-3.5 h-3.5" />
+                  <ImageIcon className="w-4 h-4" />
                   <span>Photo / Image</span>
                 </button>
               </div>
@@ -223,7 +218,7 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
                     value={linkUrl}
                     onChange={(e) => setLinkUrl(e.target.value)}
                     placeholder="https://example.com/announcement"
-                    className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 text-xs sm:text-sm min-h-[44px] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
                 </div>
               )}
@@ -234,59 +229,55 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
                     type="url"
                     value={mediaUrl}
                     onChange={(e) => setMediaUrl(e.target.value)}
-                    placeholder="Image URL (e.g. https://images.unsplash.com/... or hosted CDN image)"
-                    className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    placeholder="Image URL (e.g. https://... or public CDN link)"
+                    className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 text-xs sm:text-sm min-h-[44px] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
-                  <p className="text-[11px] text-slate-400 mt-1">
-                    Meta Graph API accepts public image URLs for direct page photo album publishing.
-                  </p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Target Page Selection (High-capacity for 100–1000+ pages) */}
-          <div className="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-4">
+          {/* Target Page Selection (Optimized for 100-1000+ pages & small touchscreens) */}
+          <div className="p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-3 sm:space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                   <Share2 className="w-3.5 h-3.5 text-blue-500" />
                   Target Facebook Pages Fleet
                 </h3>
                 <p className="text-[11px] text-slate-400 mt-0.5">
-                  Each selected page receives its own independent publishing job with idempotency.
+                  Individual publishing job created per page with idempotency.
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 pt-1 sm:pt-0">
                 <button
                   type="button"
                   onClick={handleSelectAll}
-                  className="px-2.5 py-1 rounded text-xs font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors"
+                  className="px-3 py-2 rounded-lg text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 min-h-[44px] flex items-center transition-colors"
                 >
                   Select All ({filteredPages.length})
                 </button>
-                <span className="text-slate-300 dark:text-slate-700">|</span>
                 <button
                   type="button"
                   onClick={handleDeselectAll}
-                  className="px-2.5 py-1 rounded text-xs font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="px-3 py-2 rounded-lg text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 min-h-[44px] flex items-center transition-colors"
                 >
-                  Clear Selection
+                  Clear
                 </button>
               </div>
             </div>
 
             {/* Search & Filter Bar */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
               <div className="relative flex-1">
-                <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
+                <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Filter 100+ pages by name or ID..."
-                  className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  placeholder="Filter 100+ pages by name..."
+                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 text-xs min-h-[44px] focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
 
@@ -294,7 +285,7 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 text-xs focus:outline-none"
+                  className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 text-xs min-h-[44px] focus:outline-none"
                 >
                   <option value="all">All Categories</option>
                   {categories.map((c) => (
@@ -306,11 +297,11 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
               )}
             </div>
 
-            {/* High-Performance Page Checkbox List */}
-            <div className="max-h-64 overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-lg divide-y divide-slate-100 dark:divide-slate-800">
+            {/* Page Checkbox List with accessible touch target rows */}
+            <div className="max-h-60 overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-lg divide-y divide-slate-100 dark:divide-slate-800">
               {filteredPages.length === 0 ? (
                 <div className="p-6 text-center text-xs text-slate-400">
-                  No Facebook Pages found matching your filter criteria.
+                  No Facebook Pages found matching filter.
                 </div>
               ) : (
                 filteredPages.map((page) => {
@@ -319,34 +310,34 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
                     <div
                       key={page.id}
                       onClick={() => togglePage(page.id)}
-                      className={`p-3 flex items-center justify-between cursor-pointer transition-colors ${
+                      className={`p-3 flex items-center justify-between cursor-pointer min-h-[48px] transition-colors ${
                         isChecked
                           ? 'bg-blue-50/40 dark:bg-blue-950/20'
                           : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
                       }`}
                     >
-                      <div className="flex items-center gap-3 min-w-0">
+                      <div className="flex items-center gap-3 min-w-0 pr-2">
                         <div
-                          className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                          className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
                             isChecked
                               ? 'bg-blue-600 border-blue-600 text-white'
                               : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900'
                           }`}
                         >
-                          {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
+                          {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                         </div>
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate">
                             {page.name}
                           </p>
                           <p className="text-[10px] text-slate-400 truncate">
-                            {page.category || 'General Page'} · <span className="font-mono">ID: {page.id}</span>
+                            {page.category || 'Page'} · <span className="font-mono">ID: {page.id}</span>
                           </p>
                         </div>
                       </div>
 
                       <div className="shrink-0 text-right">
-                        <span className="font-mono text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                        <span className="font-mono text-[11px] font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">
                           {formatNumber(page.fanCount)} fans
                         </span>
                       </div>
@@ -358,54 +349,54 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
           </div>
 
           {/* Publishing Mode & Scheduling */}
-          <div className="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-4">
+          <div className="p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-3 sm:space-y-4">
             <h3 className="text-xs font-bold text-slate-900 dark:text-white">
               Distribution Schedule & Dispatch
             </h3>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => setPublishMode('now')}
-                className={`py-2 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-3 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 min-h-[44px] transition-all ${
                   publishMode === 'now'
                     ? 'border-blue-600 bg-blue-600 text-white shadow-xs'
                     : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                 }`}
               >
-                <Send className="w-3.5 h-3.5" />
+                <Send className="w-4 h-4" />
                 <span>Publish Now</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setPublishMode('schedule')}
-                className={`py-2 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-3 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 min-h-[44px] transition-all ${
                   publishMode === 'schedule'
                     ? 'border-blue-600 bg-blue-600 text-white shadow-xs'
                     : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                 }`}
               >
-                <Calendar className="w-3.5 h-3.5" />
+                <Calendar className="w-4 h-4" />
                 <span>Schedule Post</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setPublishMode('draft')}
-                className={`py-2 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-3 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 min-h-[44px] transition-all ${
                   publishMode === 'draft'
                     ? 'border-blue-600 bg-blue-600 text-white shadow-xs'
                     : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                 }`}
               >
-                <Save className="w-3.5 h-3.5" />
+                <Save className="w-4 h-4" />
                 <span>Save Draft</span>
               </button>
             </div>
 
             {publishMode === 'schedule' && (
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <div>
                   <label className="text-[11px] font-medium text-slate-500 block mb-1">
                     Date
@@ -415,7 +406,7 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
                     value={scheduledDate}
                     onChange={(e) => setScheduledDate(e.target.value)}
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:outline-none"
+                    className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs min-h-[44px] focus:outline-none"
                     required={publishMode === 'schedule'}
                   />
                 </div>
@@ -428,7 +419,7 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
                     type="time"
                     value={scheduledTime}
                     onChange={(e) => setScheduledTime(e.target.value)}
-                    className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:outline-none"
+                    className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs min-h-[44px] focus:outline-none"
                     required={publishMode === 'schedule'}
                   />
                 </div>
@@ -441,7 +432,7 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
                     type="text"
                     value={timezone}
                     onChange={(e) => setTimezone(e.target.value)}
-                    className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:outline-none"
+                    className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs min-h-[44px] focus:outline-none"
                   />
                 </div>
               </div>
@@ -450,14 +441,14 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
             <button
               type="submit"
               disabled={isSubmitting || !content.trim() || selectedPageIds.length === 0}
-              className="w-full py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors shadow-xs disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm transition-colors shadow-xs disabled:opacity-50 min-h-[48px] flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
-                <span>Dispatching Publishing Pipeline...</span>
+                <span>Dispatching Pipeline...</span>
               ) : (
-                <span>
+                <span className="truncate">
                   {publishMode === 'now'
-                    ? `Publish to ${selectedPageIds.length} Facebook Pages Now`
+                    ? `Publish to ${selectedPageIds.length} Facebook Pages`
                     : publishMode === 'schedule'
                     ? `Schedule for ${selectedPageIds.length} Pages`
                     : 'Save Multi-Page Draft'}
@@ -467,23 +458,23 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
           </div>
         </div>
 
-        {/* Right Column: Live Facebook Feed Post Preview (5 Cols) */}
-        <div className="lg:col-span-5 space-y-4">
+        {/* Right Column: Live Facebook Feed Post Preview */}
+        <div className="lg:col-span-5 space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
               <Globe className="w-3.5 h-3.5 text-blue-500" />
               Meta Facebook Feed Preview
             </h3>
             <span className="text-[10px] text-slate-400">
-              Live Responsive Preview
+              Responsive Preview
             </span>
           </div>
 
-          {/* Facebook Post Mockup Container */}
-          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-md overflow-hidden max-w-md mx-auto">
+          {/* Facebook Post Mockup Container (max-w-full on mobile) */}
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-md overflow-hidden w-full max-w-full">
             {/* Post Header */}
-            <div className="p-4 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow-xs shrink-0">
+            <div className="p-3.5 sm:p-4 flex items-center gap-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs sm:text-sm shadow-xs shrink-0">
                 {previewPage.name.charAt(0)}
               </div>
               <div className="min-w-0 flex-1">
@@ -499,8 +490,8 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
             </div>
 
             {/* Post Body Message */}
-            <div className="px-4 pb-3">
-              <p className="text-xs text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed">
+            <div className="px-3.5 sm:px-4 pb-3">
+              <p className="text-xs text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed break-words">
                 {content || 'Your Facebook post content will appear here in real-time as you type...'}
               </p>
             </div>
@@ -514,7 +505,6 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
                   referrerPolicy="no-referrer"
                   className="w-full object-cover max-h-72"
                   onError={(e) => {
-                    // Fallback container if broken URL
                     (e.target as HTMLElement).style.display = 'none';
                   }}
                 />
@@ -536,7 +526,7 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
             )}
 
             {/* Facebook Action Bar */}
-            <div className="px-4 py-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium">
+            <div className="px-3.5 sm:px-4 py-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium">
               <div className="flex items-center gap-1.5 hover:text-blue-600 transition-colors cursor-default">
                 <ThumbsUp className="w-4 h-4" />
                 <span>Like</span>
@@ -555,7 +545,7 @@ export const ComposerView: React.FC<ComposerViewProps> = ({
           {/* Publishing Info Callout */}
           <div className="p-3.5 rounded-lg border border-blue-200 dark:border-blue-900/60 bg-blue-50/50 dark:bg-blue-950/30 text-xs text-blue-900 dark:text-blue-200 space-y-1">
             <div className="flex items-center gap-1.5 font-bold">
-              <Info className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
+              <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
               <span>Multi-Page Idempotency Guarantee</span>
             </div>
             <p className="text-[11px] leading-relaxed text-blue-800 dark:text-blue-300">

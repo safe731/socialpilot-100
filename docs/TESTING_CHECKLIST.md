@@ -35,3 +35,12 @@ Use this checklist to verify each stage of the application.
 - [x] Verify that all Page Access Tokens are encrypted with AES-256-GCM at rest.
 - [x] Confirm that no access tokens or app secrets are exposed in client-side API responses.
 - [x] Inspect Supabase migration file `/supabase/migrations/20261111_socialpilot_schema.sql` for complete RLS policies.
+
+## 6. Mobile-First & Responsive Verification (320px - 430px & Desktop)
+- [x] **320px (Android compact phones)**: Zero horizontal scrolling; all cards stack cleanly; touch targets $\ge 44\text{px}$.
+- [x] **360px & 375px (Standard Android & iPhone)**: Fluid grid scaling, responsive post cards, mobile drawer slide-out with backdrop.
+- [x] **390px & 430px (Large Android phones)**: Full-width touch-friendly post composer, live Facebook mockup containment, accessible dialogs.
+- [x] **768px (Tablets)**: Transition between mobile card lists and desktop data tables with balanced typography.
+- [x] **1024px+ (Desktop)**: Persistent sidebar navigation, multi-column metrics, and expanded data tables.
+- [x] **Navigation Drawer**: Accessible hamburger menu toggle with backdrop dismiss and active state highlight.
+- [x] **Touch Targets**: All interactive buttons, tabs, dropdowns, and checkboxes meet WCAG $\ge 44\text{px}$ minimum tap height.

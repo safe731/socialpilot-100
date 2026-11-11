@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ShieldCheck, UserCheck, Users, Mail, ArrowRight } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 import type { UserProfile } from '../types';
 
 interface AuthModalProps {
@@ -15,7 +15,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   currentUser,
   availableUsers,
   onSwitchUser,
-  onLogin,
   onRegister,
   onClose,
 }) => {
@@ -48,55 +47,56 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl max-w-md w-full p-6 space-y-5 animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl w-[calc(100vw-24px)] sm:w-full max-w-md max-h-[92vh] overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-5 animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-          <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+          <div className="min-w-0 pr-2">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate">
               Identity & Role Switcher
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Current Session: <span className="font-semibold text-slate-700 dark:text-slate-300">{currentUser.fullName}</span> ({currentUser.role})
+            <p className="text-[11px] text-slate-400 mt-0.5 truncate">
+              Session: <span className="font-semibold text-slate-700 dark:text-slate-300">{currentUser.fullName}</span>
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400"
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0"
+            aria-label="Close dialog"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Mode Selector */}
+        {/* Mode Selector (min 40px touch targets) */}
         <div className="flex p-1 rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60">
           <button
             type="button"
             onClick={() => setMode('switch')}
-            className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-all ${
+            className={`flex-1 py-2 rounded-md text-xs font-medium transition-all min-h-[40px] flex items-center justify-center ${
               mode === 'switch'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-semibold'
                 : 'text-slate-600 dark:text-slate-400'
             }`}
           >
-            Test Preset Profiles
+            Preset Profiles
           </button>
           <button
             type="button"
             onClick={() => setMode('new')}
-            className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-all ${
+            className={`flex-1 py-2 rounded-md text-xs font-medium transition-all min-h-[40px] flex items-center justify-center ${
               mode === 'new'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-semibold'
                 : 'text-slate-600 dark:text-slate-400'
             }`}
           >
-            Create New Account
+            New Account
           </button>
         </div>
 
         {mode === 'switch' ? (
           <div className="space-y-2">
             <p className="text-[11px] text-slate-400">
-              Select an account to test permissions, isolated page fleets, and administrative governance:
+              Select an account to test permissions, isolated fleets, and role capabilities:
             </p>
 
             <div className="space-y-2">
@@ -106,25 +106,25 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <div
                     key={u.id}
                     onClick={() => !isCurrent && handleQuickSwitch(u.id)}
-                    className={`p-3 rounded-lg border text-xs flex items-center justify-between cursor-pointer transition-all ${
+                    className={`p-3 rounded-lg border text-xs flex items-center justify-between min-h-[48px] cursor-pointer transition-all ${
                       isCurrent
                         ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/40 cursor-default'
                         : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-7 h-7 rounded-full bg-slate-800 text-white font-bold flex items-center justify-center shrink-0 text-xs">
+                    <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                      <div className="w-8 h-8 rounded-full bg-slate-800 text-white font-bold flex items-center justify-center shrink-0 text-xs">
                         {u.fullName[0]}
                       </div>
-                      <div>
-                        <p className="font-semibold text-slate-900 dark:text-slate-100">
+                      <div className="min-w-0">
+                        <p className="font-semibold text-slate-900 dark:text-slate-100 truncate">
                           {u.fullName}
                         </p>
-                        <p className="text-[10px] text-slate-400 font-mono">{u.email}</p>
+                        <p className="text-[10px] text-slate-400 font-mono truncate">{u.email}</p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <span
                         className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded font-bold ${
                           u.role === 'super_admin'
@@ -137,7 +137,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         {u.role.replace('_', ' ')}
                       </span>
                       {isCurrent && (
-                        <span className="text-[10px] text-blue-600 font-semibold">Active</span>
+                        <Check className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       )}
                     </div>
                   </div>
@@ -156,7 +156,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Jane Doe"
-                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:outline-none"
+                className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs min-h-[44px] focus:outline-none"
                 required
               />
             </div>
@@ -170,7 +170,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="jane@agency.com"
-                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:outline-none"
+                className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs min-h-[44px] focus:outline-none"
                 required
               />
             </div>
@@ -182,9 +182,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value as any)}
-                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:outline-none"
+                className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs min-h-[44px] focus:outline-none"
               >
-                <option value="user">User (Social Media Manager)</option>
+                <option value="user">User (Social Media Publisher)</option>
                 <option value="admin">Admin (Manage Team & Pages)</option>
                 <option value="super_admin">Super Admin</option>
               </select>
@@ -193,7 +193,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="submit"
               disabled={loading || !email || !fullName}
-              className="w-full py-2 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-xs transition-colors disabled:opacity-50 mt-2"
+              className="w-full py-3 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-xs transition-colors min-h-[44px] disabled:opacity-50 mt-2"
             >
               {loading ? 'Creating...' : 'Register Account'}
             </button>

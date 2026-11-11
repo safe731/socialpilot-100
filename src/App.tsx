@@ -72,6 +72,7 @@ function MainApp() {
   const [isSubmittingPost, setIsSubmittingPost] = useState(false);
   const [isQueueTriggering, setIsQueueTriggering] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Selected post for detail modal
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
@@ -391,8 +392,8 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex transition-colors">
-      {/* Sidebar Navigation */}
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex transition-colors max-w-full overflow-x-hidden">
+      {/* Sidebar Navigation (Desktop sticky sidebar + Mobile slide-out drawer) */}
       <Sidebar
         currentTab={currentTab}
         onSelectTab={setCurrentTab}
@@ -403,19 +404,22 @@ function MainApp() {
         pagesCount={pages.length}
         scheduledCount={scheduledCount}
         failedCount={failedCount}
+        isOpenMobile={isMobileMenuOpen}
+        onCloseMobile={() => setIsMobileMenuOpen(false)}
       />
 
       {/* Main Viewport Container */}
-      <div className="flex-1 min-w-0 flex flex-col min-h-screen">
+      <div className="flex-1 min-w-0 flex flex-col min-h-screen max-w-full overflow-x-hidden">
         <Navbar
           currentTab={currentTab}
           onComposeClick={() => setCurrentTab('composer')}
           onRefresh={() => loadData(false)}
           isRefreshing={isRefreshing}
           pagesCount={pages.length}
+          onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
         />
 
-        <main className="flex-1 p-6 lg:p-8">
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 w-full max-w-full overflow-x-hidden">
           {currentTab === 'dashboard' && (
             <DashboardView
               metrics={metrics}
